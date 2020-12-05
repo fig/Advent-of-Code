@@ -4,7 +4,7 @@ def test_data
   # DATA
 end
 
-INPUT = test_data || File.read("input.txt")
+INPUT = test_data || File.read(File.join(__dir__, "input.txt"))
 
 class Passport
   REQUIRED_FIELDS = %i[byr iyr eyr hgt hcl ecl pid cid].freeze
@@ -54,7 +54,7 @@ class Passport
 end
 
 def passports
-  INPUT.split("\n\n").map { |data| Passport.new(data) }
+  @passports ||= INPUT.split("\n\n").map { |data| Passport.new(data) }
 end
 
 def part1
