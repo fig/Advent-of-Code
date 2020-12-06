@@ -7,18 +7,21 @@ def test_data
   # DATA
 end
 
-DATA = test_data || File.read("input.txt")
-
+DATA = test_data || File.read(File.join(__dir__, "input.txt"))
 TOKENIZER = /(\d+)-(\d+) (\w): (\w+)/.freeze
 
+def entries
+  @entries ||= DATA.scan TOKENIZER
+end
+
 def part1
-  entries = DATA.scan TOKENIZER
-  entries.count { |min, max, x, pwd| (min.to_i..max.to_i).cover?(pwd.count(x)) }
+  entries.count { |min, max, tgt, pwd| pwd.count(tgt).between? min.to_i, max.to_i }
 end
 
 def part2
-  # entries = DATA.scan TOKENIZER
-  # entries.count { |a, b, x, pwd| (pwd[a.to_i - 1] == x) ^ (pwd[b.to_i - 1] == x) }
+  entries.count do |pos_a, pos_b, tgt, pwd|
+    (pwd[pos_a.to_i - 1] == tgt) ^ (pwd[pos_b.to_i - 1] == tgt)
+  end
 end
 
 puts "Solution part1:\n#{part1}"
