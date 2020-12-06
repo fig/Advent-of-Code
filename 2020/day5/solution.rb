@@ -65,12 +65,29 @@ def boarding_pass_ids
   @boarding_pass_ids = INPUT.split.map { |data| Pass.new(data).id }
 end
 
-def part1
+def part1_oop
   boarding_pass_ids.max
 end
 
-def part2
+def part2_oop
   ((81..855).to_a - boarding_pass_ids)[0]
+end
+
+def part1
+  File.read('input.txt')
+      .tr('FLBR','0011')
+      .split
+      .max
+      .to_i(2)
+end
+
+def part2
+  File.read('input.txt')
+      .tr('FLBR','0011')
+      .split
+      .map{_1.to_i(2)}
+      .sort
+      .then{|a|a.find{!a.member?(_1.succ)}}+1
 end
 
 puts "Solution part1:\n#{part1}"
