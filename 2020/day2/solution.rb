@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 def test_data
   # <<~DATA.freeze
   #   1-3 a: abcde
