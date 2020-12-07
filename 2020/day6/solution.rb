@@ -29,11 +29,11 @@ def groups
 end
 
 def part1
-  groups.map { |group| group.delete("\n").chars.uniq.size }.sum
+  groups.sum { |group| group.delete("\n").chars.uniq.size }
 end
 
 def part2
-  groups.map { |group| group.split.map(&:chars).inject(&:intersection).size }.sum
+  groups.sum { |group| group.split.map(&:chars).inject(&:intersection).size }
 end
 
 puts "Solution part1: #{part1}"

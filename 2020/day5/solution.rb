@@ -74,20 +74,20 @@ def part2_oop
 end
 
 def part1
-  File.read('input.txt')
-      .tr('FLBR','0011')
+  File.read("input.txt")
+      .tr("FLBR", "0011")
       .split
       .max
       .to_i(2)
 end
 
 def part2
-  File.read('input.txt')
-      .tr('FLBR','0011')
+  File.read("input.txt")
+      .tr("FLBR", "0011")
       .split
-      .map{_1.to_i(2)}
-      .sort
-      .then{|a|a.find{!a.member?(_1.succ)}}+1
+      .map { _1.to_i(2) }
+      .sort!
+      .then { |a| a.find { !a.member?(_1.succ) } } + 1
 end
 
 puts "Solution part1:\n#{part1}"
