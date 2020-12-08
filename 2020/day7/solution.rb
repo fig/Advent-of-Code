@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "ruby_jard"
+
 def test_data
   # <<~DATA
   #   light red bags contain 1 bright white bag, 2 muted yellow bags.
@@ -25,19 +27,16 @@ def container_tokenizer(bag)
   /(.*) bags contain.*(?=#{bag})/.freeze
 end
 
-def contents_tokenizer(bag)
-  /shiny gold bags contain (\d+.*?(?=bags?)|no other) bags\./
-end
-
 def result
   @result ||= []
 end
 
 def part1
+  result.clear
   containers(["shiny gold"])
   result.flatten.uniq!.size
 end
-require "ruby_jard"
+
 def containers(bags)
   found = []
   bags.each { |bag| found << rules.flat_map { _1.scan container_tokenizer(bag) }.flatten }
@@ -45,7 +44,31 @@ def containers(bags)
   containers(found) unless found.empty?
 end
 
+def contents_tokenizer(bag)
+  /#{bag} bags contain (\d+.*|no other)/
+end
+
 def part2
+  result.clear
+  find_contents_of "1 shiny gold"
+  result.flatten.sum(&:to_i)
+end
+
+def find_contents_of(bags)
+  number, bag = bags.scan(/(\d+) (.*)/).flatten
+  number.to_i.times do
+    rule = rules.find { _1.start_with? bag }
+    rule.scan(contents_tokenizer(bag))
+    contents = Regexp.last_match[1]
+    return 0 if contents == "no other"
+
+    count(contents)
+    contents.gsub(/bags?\.?/, "").split(",").map(&:strip).each { find_contents_of(_1) }
+  end
+end
+
+def count(contents)
+  result << contents.scan(/\d+/)
 end
 
 puts "Solution part1: #{part1}"
