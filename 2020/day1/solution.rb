@@ -1,22 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-def test_data
-end
-
-INPUT = test_data || File.read(File.join(__dir__, "input.txt"))
+INPUT = File.read(File.join(__dir__, "input.txt"))
 
 def data
   @data ||= INPUT.split.map(&:to_i)
 end
 
-def part1
-  data.combination(2).find { |combo| combo.sum == 2020 }.inject(:*)
-end
+l = ->(n) { data.combination(n).find { _1.sum == 2020 }.inject(:*) }
 
-def part2
-  data.combination(3).find { |combo| combo.sum == 2020 }.inject(:*)
-end
-
-puts "Solution part1: #{part1}"
-puts "Solution part2: #{part2}"
+puts "Solution part1: #{l[2]}"
+puts "Solution part2: #{l[3]}"
