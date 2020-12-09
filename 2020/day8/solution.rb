@@ -57,12 +57,9 @@ class Runner
     @seen << @pointer
 
     case @instructions[@pointer]
-    when /acc ([+-]\d+)/
-      increment_accumulator(Regexp.last_match(1))
-    when /jmp ([+-]\d+)/
-      move_pointer(Regexp.last_match(1))
-    when /nop/
-      @pointer += 1
+    when /acc ([+-]\d+)/ then increment_accumulator(Regexp.last_match(1))
+    when /jmp ([+-]\d+)/ then move_pointer(Regexp.last_match(1))
+    when /nop/ then @pointer += 1
     end
   end
 
@@ -78,7 +75,7 @@ class Runner
   def repair_code
     loop do
       line, instruction = @trace.pop
-      next if @fixed_lines.include?(line) || instruction.include?("acc")
+      next if @fixed_lines.include?(line) || instruction.start_with?("acc")
 
       fix_line(line, instruction)
       break
@@ -87,10 +84,14 @@ class Runner
   end
 
   def fix_line(line, instruction)
-    @instructions[@previous_fix[0]] = @previous_fix[1] if @previous_fix
+    revert_previous_fix
     @previous_fix = [line, instruction]
     @instructions[line] = instruction.tr "nojm", "jmno"
     @fixed_lines << line
+  end
+
+  def revert_previous_fix
+    @previous_fix && @instructions[@previous_fix[0]] = @previous_fix[1]
   end
 end
 
