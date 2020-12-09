@@ -18,72 +18,92 @@ def test_data
 end
 
 class Runner
-  attr_reader :fix_errors, :instructions, :pointer, :accumulator, :trace, :fixed, :seen
-
   def initialize(instructions, fix_errors: true)
     @instructions = instructions
     @fix_errors = fix_errors
+    @fixed_lines = []
+    @previous_fix = nil
   end
 
   def run
+    initialize_run
+    loop do
+      return @accumulator if end_of_code? || (error? && !@fix_errors)
+
+      repair_code if error?
+      execute_instruction
+    end
+  end
+
+  private
+
+  def initialize_run
     @pointer = 0
     @accumulator = 0
     @trace = []
     @seen = []
-    @fixed ||= []
-    @previous_fix ||= nil
-    loop do
-      return accumulator if pointer == instructions.length
-      break fix if seen.include?(pointer) && fix_errors
-      return accumulator if seen.include?(pointer)
+  end
 
-      trace << [pointer, instructions[pointer]]
-      seen << pointer
+  def end_of_code?
+    @pointer == @instructions.length
+  end
 
-      case instructions[pointer]
-      when /acc ([+-]\d+)/
-        @accumulator += Regexp.last_match(1).to_i
-        @pointer += 1
-      when /jmp ([+-]\d+)/
-        @pointer += Regexp.last_match(1).to_i
-      when /nop/
-        @pointer += 1
-      end
+  def error?
+    @seen.include?(@pointer)
+  end
+
+  def execute_instruction
+    @trace << [@pointer, @instructions[@pointer]]
+    @seen << @pointer
+
+    case @instructions[@pointer]
+    when /acc ([+-]\d+)/
+      increment_accumulator(Regexp.last_match(1))
+    when /jmp ([+-]\d+)/
+      move_pointer(Regexp.last_match(1))
+    when /nop/
+      @pointer += 1
     end
   end
 
-  def fix
-    loop do
-      line, instruction = trace.pop
-      next if fixed.include? line
-      next if instruction.include?("acc")
+  def increment_accumulator(value)
+    @accumulator += value.to_i
+    @pointer += 1
+  end
 
-      instructions[@previous_fix[0]] = @previous_fix[1] if @previous_fix
-      @previous_fix = [line, instruction]
-      instructions[line] =
-        case instruction
-        when /nop/
-          instructions[line].gsub "nop", "jmp"
-        else
-          instructions[line].gsub "jmp", "nop"
-        end
-      fixed << line
+  def move_pointer(value)
+    @pointer += value.to_i
+  end
+
+  def repair_code
+    loop do
+      line, instruction = @trace.pop
+      next if @fixed_lines.include?(line) || instruction.include?("acc")
+
+      fix_line(line, instruction)
       break
     end
     run
   end
+
+  def fix_line(line, instruction)
+    @instructions[@previous_fix[0]] = @previous_fix[1] if @previous_fix
+    @previous_fix = [line, instruction]
+    @instructions[line] = instruction.tr "nojm", "jmno"
+    @fixed_lines << line
+  end
 end
 
 DATA = test_data || File.read(File.join(__dir__, "input.txt"))
-INSTSTRUCTIONS = DATA.split "\n"
+CODE = DATA.split "\n"
 
 def part1
-  Runner.new(INSTSTRUCTIONS.dup, fix_errors: false).run
+  Runner.new(CODE.dup, fix_errors: false).run
 end
 
 def part2
-  Runner.new(INSTSTRUCTIONS.dup).run
+  Runner.new(CODE.dup).run
 end
 
 puts "Solution part1:\n#{part1}"
-puts "Solution part2:\n#{part2}" if part2
+puts "Solution part2:\n#{part2}"
