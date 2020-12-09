@@ -4,17 +4,17 @@
 require "ruby_jard"
 
 def test_data
-  <<~DATA
-    nop +0
-    acc +1
-    jmp +4
-    acc +3
-    jmp -3
-    acc -99
-    acc +1
-    jmp -4
-    acc +6
-  DATA
+  # <<~DATA
+  #   nop +0
+  #   acc +1
+  #   jmp +4
+  #   acc +3
+  #   jmp -3
+  #   acc -99
+  #   acc +1
+  #   jmp -4
+  #   acc +6
+  # DATA
 end
 
 DATA = test_data || File.read(File.join(__dir__, "input.txt"))
@@ -40,11 +40,16 @@ def part1
   run INSTSTRUCTIONS.dup
 end
 
+def part2
+  run INSTSTRUCTIONS.dup
+end
+
 def run(instructions, pointer = 0)
   @accumulator = 0
   @trace = []
   @fixed ||= []
   @seen = []
+  @previous_fix ||= nil
   loop do
     return accumulator if pointer == instructions.length
     break fix instructions if seen.include? pointer
@@ -67,10 +72,11 @@ end
 def fix(instructions)
   loop do
     line, instruction = trace.pop
-    jard
     next if fixed.include? line
     next if instruction.include?("acc")
 
+    instructions[@previous_fix[0]] = @previous_fix[1] if @previous_fix
+    @previous_fix = [line, instruction]
     instructions[line] =
       case instruction
       when /nop/
@@ -79,11 +85,9 @@ def fix(instructions)
         instructions[line].gsub "jmp", "nop"
       end
     fixed << line
+    break
   end
   run instructions
-end
-
-def part2
 end
 
 puts "Solution part1:\n#{part1}"
