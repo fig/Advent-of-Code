@@ -45,12 +45,12 @@ end
 
 def part2
   tgt = part1
-  (2..).each do |len|
-    input.each_index do |i|
-      return input[i, len].minmax.sum if input[i, len].sum == tgt
+  (2..).each do |n|
+    input.each_cons(n) do |a|
+      return a.minmax.sum if a.sum == tgt
     end
   end
 end
 
 puts "Solution part1:\n#{part1 == 542_529_149}"
-puts "Solution part2:\n#{part2 == 75_678_618}"
+puts "Solution part2:\n#{part2 == 75_678_618 || part2}"
