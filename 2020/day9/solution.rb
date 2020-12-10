@@ -45,7 +45,7 @@ end
 
 def part2
   tgt = part1
-  (2..).each do |n|
+  (2..input.length).each do |n|
     input.each_cons(n) do |a|
       return a.minmax.sum if a.sum == tgt
     end
