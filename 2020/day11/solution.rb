@@ -129,8 +129,8 @@ class Seat
     @room = room
     @x = x
     @y = y
-    @occupied = false
-    @absent = true if icon == "."
+    @occupied = (icon == "L")
+    @absent = (icon == ".")
   end
 
   def vacant?
