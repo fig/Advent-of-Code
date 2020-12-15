@@ -12,16 +12,14 @@ DATA = test_data || File.read(File.join(__dir__, "input.txt"))
 def data = DATA.strip.split(",").map(&:to_i)
 
 def play(data, tgt:)
-  @lookup = {}
-  data.each.with_index(1) do |d, i|
-    @lookup[d] = i
-  end
+  lookup = {}
+  data.each.with_index(1) { |d, i| lookup[d] = i }
   current_index = data.size
   last_spoken = data.last
   until current_index == tgt
-    spoken_before = @lookup[last_spoken]
+    spoken_before = lookup[last_spoken]
     next_number = spoken_before ? (current_index - spoken_before) : 0
-    @lookup[last_spoken] = current_index
+    lookup[last_spoken] = current_index
     current_index += 1
     last_spoken = next_number
   end
