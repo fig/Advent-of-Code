@@ -1,0 +1,120 @@
+require:
+  - rubocop-rspec
+  - rubocop-performance
+
+AllCops:
+  Exclude:
+    - "**/*.erb"
+    - "**/db/**/*"
+  TargetRubyVersion: "3.0"
+  EnabledByDefault: true
+
+Bundler/GemComment:
+  Enabled: false
+
+Layout/HashAlignment:
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+
+Layout/LineLength:
+  Description: 'Limit lines to 80 characters.'
+  StyleGuide: '#80-character-limits'
+  Enabled: false
+
+Lint/ConstantResolution:
+  Enabled: false
+
+Lint/NumberConversion:
+  Enabled: false
+
+Lint/UnusedBlockArgument:
+  AutoCorrect: false
+
+Lint/UnusedMethodArgument:
+  AutoCorrect: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'config/**/*'
+    - 'spec/*_spec.rb'
+    - 'spec/**/*_spec.rb'
+    - 'Guardfile'
+
+Performance/ChainArrayAllocation:
+  Description: 'Instead of chaining array methods that allocate new arrays, mutate an existing array.'
+  Reference: 'https://twitter.com/schneems/status/1034123879978029057'
+  Enabled: true
+
+RSpec/ImplicitExpect:
+  Enabled: false
+
+Style/CollectionMethods:
+  Enabled: false
+  PreferredMethods:
+    collect: 'map'
+    collect!: 'map!'
+    #inject: 'reduce'
+    detect: 'find'
+    find_all: 'select'
+    member?: 'include?'
+
+
+Style/ConstantVisibility:
+  Enabled: false
+
+Style/Copyright:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/DocumentationMethod:
+  Enabled: false
+
+Style/EmptyMethod:
+  Enabled: false
+
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/MethodCallWithArgsParentheses:
+  Enabled: false
+
+Style/MissingElse:
+  Enabled: false
+
+Style/NumericLiterals:
+  Strict: true
+  MinDigits: 4
+
+Style/NumericPredicate:
+  AutoCorrect: true
+
+Style/RedundantFetchBlock:
+  SafeForConstants: true
+  AutoCorrect: true
+
+Style/StringHashKeys:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/SymbolProc:
+  AutoCorrect: true
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/WhileUntilModifier:
+  AutoCorrect: false
+
+Style/YodaCondition:
+  Enabled: false
