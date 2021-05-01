@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
 source "https://rubygems.org"
 
 gem "guard-rspec", require: false, git: "https://github.com/fig/guard-rspec.git"
+gem "rspec", "~> 3.10"
 gem "rubocop-performance", require: false
 gem "rubocop-rspec", require: false
 gem "ruby_jard"
-
-gem "rspec", "~> 3.10"
+gem "simplecov", require: false
