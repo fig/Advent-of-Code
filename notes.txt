@@ -1,3 +1,0 @@
-When Changed
-https://github.com/joh/when-changed
-$ when-changed solution.rb 'clear && ruby %f'

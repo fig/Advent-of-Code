@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 
 class Solution
-  # TOKENIZER = //
-
   def input
     test_input || File.read(File.join(__dir__, "input.txt"))
   end
@@ -26,15 +24,18 @@ class Solution
     @data ||= input.split.map(&:to_i)
   end
 
-  def part1
-    data.each_cons(2).count { |a, b| a < b }
+  # 1624
+  # 1653
+  def solutions
+    puts "Part1: #{solve_for(2)}"
+    puts "Part1: #{solve_for(4)}"
   end
 
-  def part2
-    data.each_cons(3).each_cons(2).count { |a, b| a.sum < b.sum }
+  private
+
+  def solve_for(n)
+    data.each_cons(n).count { _1[0] < _1[-1] }
   end
 end
 
-solution = Solution.new
-puts "Part1: #{solution.part1}"
-puts "Part2: #{solution.part2}" if solution.part2
+Solution.new.solutions
