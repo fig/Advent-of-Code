@@ -28,7 +28,7 @@ class Solution
   # 1653
   def solutions
     puts "Part1: #{solve_for(2)}"
-    puts "Part1: #{solve_for(4)}"
+    puts "Part2: #{solve_for(4)}"
   end
 
   private
