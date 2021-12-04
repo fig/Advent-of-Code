@@ -2,54 +2,83 @@
 require "ruby_jard"
 
 class Solution
-  # TOKENIZER = //
-
   def input
     test_input || File.read(File.join(__dir__, "input.txt"))
   end
 
   def test_input
-    <<~INPUT
-      00100
-      11110
-      10110
-      10111
-      10101
-      01111
-      00111
-      11100
-      10000
-      11001
-      00010
-      01010
-    INPUT
-  end
-
-  def data
-    @data ||= input.split # .map(&:to_i)
-  end
-
-  def word_length
-    @word_length ||= data.first.length
+    # <<~INPUT
+    #   00100
+    #   11110
+    #   10110
+    #   10111
+    #   10101
+    #   01111
+    #   00111
+    #   11100
+    #   10000
+    #   11001
+    #   00010
+    #   01010
+    # INPUT
   end
 
   def part1
-    tally = Array.new(word_length, 0)
-    data.each do |l|
-      l.chars.each_with_index do |c, i|
-        tally[i] += c.to_i
-      end
-    end
-    gamma = tally.map { |t| t > (data.length / 2) ? "1" : "0" }
-                 .join
-                 .to_i(2)
-    epsilon = tally.map { |t| t > (data.length / 2) ? "0" : "1" }
-                   .join
-                   .to_i(2)
-    gamma * epsilon
+    gamma_rate.to_i(2) * epsilon_rate.to_i(2)
   end
 
   def part2
+    oxygen_generator_rating.to_i(2) * co2_scrubber_rating.to_i(2)
+  end
+
+  def gamma_rate
+    @gamma_rate ||= data_transposed
+                    .map { |col| col.count("1") > (dataset_size / 2) ? "1" : "0" }
+                    .join
+  end
+
+  def epsilon_rate
+    gamma_rate.tr("01", "10")
+  end
+
+  def oxygen_generator_rating
+    data_filter toggle: "1"
+  end
+
+  def co2_scrubber_rating
+    data_filter toggle: "0"
+  end
+
+  def data_filter(toggle:)
+    entries = data.dup
+    bit_position = 0
+    loop do
+      tally = entries.map { |entry| entry[bit_position] }
+                     .tally
+      if tally["0"] == tally["1"]
+        entries.select! { |entry| entry[bit_position] == toggle }
+      else
+        most_common = tally.max_by { |k, v| v }
+                           .first
+        entries.select! { |entry| entry[bit_position] == most_common } if toggle == "1"
+        entries.reject! { |entry| entry[bit_position] == most_common } if toggle == "0"
+      end
+      break entries[0] if entries.size == 1
+
+      bit_position += 1
+    end
+  end
+
+  def data
+    @data ||= input.split
+  end
+
+  def data_transposed
+    @data_transposed ||= data.map(&:chars).transpose
+  end
+
+  def dataset_size
+    @dataset_size ||= input.lines.count
   end
 end
 
