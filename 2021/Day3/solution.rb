@@ -53,13 +53,12 @@ class Solution
     entries = data.dup
     bit_position = 0
     loop do
-      tally = entries.map { |entry| entry[bit_position] }
-                     .tally
+      bits = entries.map { |entry| entry[bit_position] }
+      tally = bits.tally
       if tally["0"] == tally["1"]
         entries.select! { |entry| entry[bit_position] == toggle }
       else
-        most_common = tally.max_by { |k, v| v }
-                           .first
+        most_common, = tally.max_by(&:last)
         entries.select! { |entry| entry[bit_position] == most_common } if toggle == "1"
         entries.reject! { |entry| entry[bit_position] == most_common } if toggle == "0"
       end
