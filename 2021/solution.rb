@@ -4,7 +4,7 @@ class Solution
   # TOKENIZER = //
 
   def input
-    test_input || File.read(File.join(__dir__, "input.txt"))
+    test_input || File.read("input.txt")
   end
 
   def test_input
@@ -24,6 +24,5 @@ class Solution
   end
 end
 
-solution = Solution.new
-puts "Part1: #{solution.part1}"
-puts "Part2: #{solution.part2}" if solution.part2
+puts "Part1: #{Solution.new.part1}"
+puts "Part2: #{Solution.new.part2}"
