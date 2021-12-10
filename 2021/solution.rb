@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
+require 'ruby_jard'
 
 class Solution
   # TOKENIZER = //
 
   def input
-    test_input || File.read("input.txt")
+    test_input || File.read(File.join(__dir__, "input.txt"))
   end
 
   def test_input
