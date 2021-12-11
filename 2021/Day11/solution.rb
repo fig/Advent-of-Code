@@ -18,9 +18,9 @@ class Solution
   end
 
   def part2
-    (1..).each do |iteration|
+    (1..).each do |step|
       tick
-      break iteration if @flashed_this_step.size == 100
+      break step if @flashed_this_step.size == 100
     end
   end
 
