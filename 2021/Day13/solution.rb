@@ -1,6 +1,44 @@
 #!/usr/bin/env ruby
 
 class Solution
+  def part1
+    __send__(*instructions.first, paper).uniq.size
+  end
+
+  def part2
+    dots = instructions.reduce(paper) { |acc, elem| __send__(*elem, acc.uniq) }
+    (0..dots.max_by{_1[1]}[1]).each do |line|
+      (0..dots.max_by{_1[0]}[0]).each do |char|
+        print dots.include?([char, line]) ? "##" : "  "
+      end
+      print "\n"
+    end
+    nil
+  end
+
+  private
+
+  def instructions
+    @instructions ||=
+      data[1].each_line.map{_1.split("=")}.map{[_1[0].tr(" ", "_").to_sym, _1[1].to_i]}
+  end
+
+  def paper
+    @paper ||= data[0].each_line.map{_1.split(",").map(&:to_i)}
+  end
+
+  def fold_along_x(magnitude, paper)
+    paper.map { |x, y| [x < magnitude ? x : magnitude - (x - magnitude), y] }
+  end
+
+  def fold_along_y(magnitude, paper)
+    paper.map { |x, y| [x, y < magnitude ? y : magnitude - (y - magnitude)] }
+  end
+
+  def data
+    @data ||= input.split("\n\n")
+  end
+
   def input
     @input ||= test_input || File.read(File.join(__dir__, "input.txt"))
   end
@@ -29,44 +67,6 @@ class Solution
     #   fold along y=7
     #   fold along x=5
     # INPUT
-  end
-
-  def data
-    @data ||= input.split("\n\n")
-  end
-
-  def paper
-    @paper ||= data[0].each_line.map{_1.split(",").map(&:to_i)}
-  end
-
-  def instructions
-    @instructions ||=
-      data[1].each_line.map{_1.split("=")}.map{[_1[0].tr(" ", "_").to_sym, _1[1].to_i]}
-  end
-
-  def fold_along_x(magnitude, paper)
-    paper.map { |x, y| [x < magnitude ? x : magnitude - (x - magnitude), y] }
-         .uniq
-  end
-
-  def fold_along_y(magnitude, paper)
-    paper.map { |x, y| [x, y < magnitude ? y : magnitude - (y - magnitude)] }
-         .uniq
-  end
-
-  def part1
-    __send__(*instructions.first, paper).size
-  end
-
-  def part2
-    dots = instructions.reduce(paper) { |acc, elem| __send__(*elem, acc) }
-    (0..dots.max_by{_1[1]}[1]).each do |line|
-      (0..dots.max_by{_1[0]}[0]).each do |char|
-        print dots.include?([char, line]) ? "##" : "  "
-      end
-      print "\n"
-    end
-    nil
   end
 end
 
