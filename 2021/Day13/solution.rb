@@ -6,31 +6,29 @@ class Solution
   end
 
   def test_input
-    <<~INPUT
-      6,10
-      0,14
-      9,10
-      0,3
-      10,4
-      4,11
-      6,0
-      6,12
-      4,1
-      0,13
-      10,12
-      3,4
-      3,0
-      8,4
-      1,10
-      2,14
-      8,10
-      9,0
-
-      fold along y=7
-      fold along x=5
-
-    INPUT
-    nil
+    # <<~INPUT
+    #   6,10
+    #   0,14
+    #   9,10
+    #   0,3
+    #   10,4
+    #   4,11
+    #   6,0
+    #   6,12
+    #   4,1
+    #   0,13
+    #   10,12
+    #   3,4
+    #   3,0
+    #   8,4
+    #   1,10
+    #   2,14
+    #   8,10
+    #   9,0
+    #
+    #   fold along y=7
+    #   fold along x=5
+    # INPUT
   end
 
   def data
@@ -48,12 +46,12 @@ class Solution
 
   def fold_along_x(magnitude, paper)
     paper.map { |x, y| [x < magnitude ? x : magnitude - (x - magnitude), y] }
-         .uniq!
+         .uniq
   end
 
   def fold_along_y(magnitude, paper)
     paper.map { |x, y| [x, y < magnitude ? y : magnitude - (y - magnitude)] }
-         .uniq!
+         .uniq
   end
 
   def part1
