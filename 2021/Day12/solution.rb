@@ -6,8 +6,8 @@ class Solution
 
     input.lines(chomp: true).each do |path|
       a, b = *path.split("-")
-      @paths[a] << b
-      @paths[b] << a
+      @paths[a] << b unless b == "start" || a == "end"
+      @paths[b] << a unless a == "start" || b == "end"
     end
   end
 
@@ -21,11 +21,9 @@ class Solution
   def part2
     path = ["start"]
     count_paths(path) do |dest, current_path|
-      dest == "start" || (
-        dest == dest.downcase &&
-        current_path.tally.any? { |k, v| k == k.downcase && v > 1 } &&
-        current_path.include?(dest)
-      )
+      dest == dest.downcase &&
+        current_path.include?(dest) &&
+        current_path.tally.any? { |k, v| 1 < v && k == k.downcase }
     end
   end
 
