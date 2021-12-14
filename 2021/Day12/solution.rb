@@ -5,21 +5,21 @@ class Solution
     @paths = Hash.new { |h, k| h[k] = [] }
 
     input.lines(chomp: true).each do |path|
-      a, b = *path.split("-")
-      @paths[a] << b unless b == "start" || a == "end"
-      @paths[b] << a unless a == "start" || b == "end"
+      a, b = *path.split("-").map(&:to_sym)
+      @paths[a] << b unless b == :start || a == :end
+      @paths[b] << a unless a == :start || b == :end
     end
   end
 
   def part1
-    path = ["start"]
+    path = [:start]
     count_paths(path) do |dest, current_path|
       dest == dest.downcase && current_path.include?(dest)
     end
   end
 
   def part2
-    path = ["start"]
+    path = [:start]
     count_paths(path) do |dest, current_path|
       dest == dest.downcase &&
         current_path.include?(dest) &&
@@ -30,7 +30,7 @@ class Solution
   private
 
   def count_paths(path, &block)
-    return 1 if path.last == "end"
+    return 1 if path.last == :end
 
     @paths[path.last]
       .reject { |dest| yield dest, path }
