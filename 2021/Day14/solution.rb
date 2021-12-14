@@ -25,8 +25,7 @@ class Solution
         @pairs[insert + pair[1]] += v
       end
     end
-    min, max = @tally.minmax_by { |_k, v| v }
-    max[1] - min[1]
+    @tally.values.minmax.reduce(&:-).abs
   end
 
   private
