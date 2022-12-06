@@ -2,19 +2,17 @@
 
 class Solution
   def part1
-    find_uniq_sequence 4
+    find_uniq_sequence length: 4
   end
 
   def part2
-    find_uniq_sequence 14
+    find_uniq_sequence length: 14
   end
 
   private
 
-  def find_uniq_sequence(length)
-    stream.chars.each_cons(length).with_index(length) do |chars, i|
-      break i if chars.uniq.size == length
-    end
+  def find_uniq_sequence(length:)
+    length + stream.chars.each_cons(length).find_index { |seq| seq.uniq == seq }
   end
 
   def stream
