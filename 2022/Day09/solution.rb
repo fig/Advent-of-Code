@@ -4,19 +4,16 @@ class Solution
   end
 
   def test_input
-    <<~INPUT
-      R 4
-      U 4
-      L 3
-      D 1
-      R 4
-      D 1
-      L 5
-      R 2
-    INPUT
-  end
-
-  def data
+    # <<~INPUT
+    #   R 4
+    #   U 4
+    #   L 3
+    #   D 1
+    #   R 4
+    #   D 1
+    #   L 5
+    #   R 2
+    # INPUT
   end
 
   def solutions
@@ -27,50 +24,91 @@ class Solution
   private
 
   def part1
-    # Parse the input and extract the list of motions
-    motions = input.split("\n").map { |line| line.split(" ") }
-
-    # Initialize the head and tail positions
-    head_pos = [0, 0]
-    tail_pos = [0, 0]
-
-    # Loop through the list of motions
     motions.each do |motion|
-      # Extract the direction and number of steps from the current motion
       direction = motion[0]
       steps = motion[1].to_i
 
-      # Update the head position based on the direction and number of steps
       case direction
       when "R"
-        head_pos[0] += steps
+        steps.times do
+          head[0] += 1
+          move_tail
+        end
       when "L"
-        head_pos[0] -= steps
+        steps.times do
+          head[0] -= 1
+          move_tail
+        end
       when "U"
-        head_pos[1] += steps
+        steps.times do
+          head[1] += 1
+          move_tail
+        end
       when "D"
-        head_pos[1] -= steps
-      end
-
-      # Update the tail position based on the new head position
-      if head_pos[0].abs == 1 || head_pos[1].abs == 1
-        # If the head is one step away from the tail in the same row or column,
-        # move the tail one step in the same direction as the head
-        tail_pos[0] += head_pos[0] - tail_pos[0]
-        tail_pos[1] += head_pos[1] - tail_pos[1]
-      elsif (head_pos[0] - tail_pos[0]).abs > 1 || (head_pos[1] - tail_pos[1]).abs > 1
-        # If the head and tail are not in the same row or column, move the tail
-        # one step diagonally to keep up with the head
-        tail_pos[0] += (head_pos[0] - tail_pos[0]) # .sign
-        tail_pos[1] += (head_pos[1] - tail_pos[1]) # .sign
+        steps.times do
+          head[1] -= 1
+          move_tail
+        end
       end
     end
+    seen_positions.uniq.size
+  end
 
-    # Calculate the Manhattan distance between the head and tail positions
-    distance = head_pos[0].abs + head_pos[1].abs
+  def head
+    @head ||= [0, 0]
+  end
 
-    # Print the result
-    puts "The Manhattan distance between the head and tail positions is #{distance}"
+  def tail
+    @tail ||= [0, 0]
+  end
+
+  def motions
+    @motions ||= input.split("\n").map(&:split)
+  end
+
+  def seen_positions
+    @seen_positions ||= [[0, 0]]
+  end
+
+  def move_tail
+    return if head_and_tail_touching?
+
+    if head[0] == tail[0]
+      if head[1] > tail[1]
+        tail[1] += 1
+      else
+        tail[1] -= 1
+      end
+    elsif head[1] == tail[1]
+      if head[0] > tail[0]
+        tail[0] += 1
+      else
+        tail[0] -= 1
+      end
+    else
+      move_tail_diagonally
+    end
+
+    seen_positions << tail.dup
+  end
+
+  def head_and_tail_touching?
+    (head[0] - tail[0]).abs <= 1 && (head[1] - tail[1]).abs <= 1
+  end
+
+  def move_tail_diagonally
+    # move tail one step diagonally towards head
+    if head[0] > tail[0]
+      tail[0] += 1
+    else
+      tail[0] -= 1
+    end
+
+    if head[1] > tail[1]
+      tail[1] += 1
+    else
+      tail[1] -= 1
+    end
   end
 
   def part2
@@ -78,3 +116,5 @@ class Solution
 end
 
 Solution.new.solutions
+
+# 5513
