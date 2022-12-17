@@ -1,120 +1,39 @@
-class Solution
-  def input
-    test_input || File.read(File.join(__dir__, "input.txt"))
-  end
+require_relative "rope"
 
-  def test_input
-    # <<~INPUT
-    #   R 4
-    #   U 4
-    #   L 3
-    #   D 1
-    #   R 4
-    #   D 1
-    #   L 5
-    #   R 2
-    # INPUT
-  end
+module Day09
+  class Solution
+    attr_reader :rope
 
-  def solutions
-    puts "Part1: #{part1}"
-    puts "Part2: #{part2}"
-  end
+    def initialize(length)
+      @rope = Rope.new(length)
+      move_rope
+    end
 
-  private
+    def uniq_locations(member)
+      rope[member].trail.uniq.count
+    end
 
-  def part1
-    motions.each do |motion|
-      direction = motion[0]
-      steps = motion[1].to_i
+    private
 
-      case direction
-      when "R"
-        steps.times do
-          head[0] += 1
-          move_tail
-        end
-      when "L"
-        steps.times do
-          head[0] -= 1
-          move_tail
-        end
-      when "U"
-        steps.times do
-          head[1] += 1
-          move_tail
-        end
-      when "D"
-        steps.times do
-          head[1] -= 1
-          move_tail
-        end
+    def move_rope
+      motions.each do |motion|
+        rope.head.move(motion)
       end
     end
-    seen_positions.uniq.size
-  end
 
-  def head
-    @head ||= [0, 0]
-  end
-
-  def tail
-    @tail ||= [0, 0]
-  end
-
-  def motions
-    @motions ||= input.split("\n").map(&:split)
-  end
-
-  def seen_positions
-    @seen_positions ||= [[0, 0]]
-  end
-
-  def move_tail
-    return if head_and_tail_touching?
-
-    if head[0] == tail[0]
-      if head[1] > tail[1]
-        tail[1] += 1
-      else
-        tail[1] -= 1
-      end
-    elsif head[1] == tail[1]
-      if head[0] > tail[0]
-        tail[0] += 1
-      else
-        tail[0] -= 1
-      end
-    else
-      move_tail_diagonally
+    def input
+      File.read(File.join(__dir__, "input.txt"))
     end
 
-    seen_positions << tail.dup
-  end
-
-  def head_and_tail_touching?
-    (head[0] - tail[0]).abs <= 1 && (head[1] - tail[1]).abs <= 1
-  end
-
-  def move_tail_diagonally
-    # move tail one step diagonally towards head
-    if head[0] > tail[0]
-      tail[0] += 1
-    else
-      tail[0] -= 1
+    def motions
+      input.split("\n").map(&:split)
     end
-
-    if head[1] > tail[1]
-      tail[1] += 1
-    else
-      tail[1] -= 1
-    end
-  end
-
-  def part2
   end
 end
 
-Solution.new.solutions
+s = Day09::Solution.new(10)
+puts s.uniq_locations(1)
+puts s.uniq_locations(9)
 
 # 5513
+# 2427
