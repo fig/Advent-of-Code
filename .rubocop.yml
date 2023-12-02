@@ -1,0 +1,171 @@
+require:
+  - rubocop-performance
+
+AllCops:
+  EnabledByDefault: true
+  NewCops: enable
+
+Bundler/GemComment:
+  Enabled: false
+
+Bundler/GemVersion:
+  Enabled: false
+
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Layout/HashAlignment:
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+
+Layout/LineLength:
+  Max: 100
+  Exclude:
+    - "db/**/*.rb"
+    - "Gemfile"
+    - "config/initializers/new_framework_defaults_7_1.rb"
+  AllowedPatterns:
+    - "it { should"
+    - "# "
+  AutoCorrect: true
+
+Lint/ConstantResolution:
+  Enabled: false
+
+Lint/NonDeterministicRequireOrder:
+  Enabled: false
+
+Lint/NumberConversion:
+  Enabled: false
+
+Lint/UnusedBlockArgument:
+  AutoCorrect: false
+
+Lint/UnusedMethodArgument:
+  AutoCorrect: false
+
+Metrics/BlockLength:
+  Exclude:
+    - "*.gemspec"
+    - Guardfile
+    - config/**/*
+    - lib/tasks/**/*
+    - spec/*_spec.rb
+    - spec/**/*_spec.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - db/migrate/**/*
+
+Naming/BlockForwarding:
+  EnforcedStyle: explicit
+
+Naming/FileName:
+  Exclude: ["Gemfile"]
+
+Naming/MethodParameterName:
+  AllowedNames: ["a", "as", "b", "to", "x", "y", "z"]
+
+Performance/ChainArrayAllocation:
+  Description:
+    Instead of chaining array methods that allocate new arrays, mutate
+    an existing array.
+  Reference: https://twitter.com/schneems/status/1034123879978029057
+  Enabled: true
+
+Style/ArgumentsForwarding:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/BlockDelimiters:
+  EnforcedStyle: semantic
+  AllowBracesOnProceduralOneLiners: true
+  AllowedMethods:
+    - before
+
+Style/ClassMethodsDefinitions:
+  EnforcedStyle: self_class
+
+Style/CollectionMethods:
+  Enabled: false
+  PreferredMethods:
+    collect: map
+    collect!: map!
+    detect: find
+    find_all: select
+    member?: include?
+
+Style/ConstantVisibility:
+  Enabled: false
+
+Style/Copyright:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/DocumentationMethod:
+  Enabled: false
+
+Style/EmptyMethod:
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: consistent
+
+Style/InlineComment:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/MethodCallWithArgsParentheses:
+  Enabled: false
+
+Style/MissingElse:
+  Enabled: false
+
+Style/NumericLiterals:
+  Strict: true
+
+Style/NumericPredicate:
+  AutoCorrect: true
+
+Style/RedundantFetchBlock:
+  SafeForConstants: true
+  AutoCorrect: true
+
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
+
+Style/RequireOrder:
+  Enabled: false
+
+Style/StringHashKeys:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/SymbolProc:
+  AutoCorrect: true
+
+Style/TopLevelMethodDefinition:
+  Enabled: false
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/WhileUntilModifier:
+  AutoCorrect: false
+
+Style/YodaCondition:
+  Enabled: false
