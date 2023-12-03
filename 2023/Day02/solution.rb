@@ -14,11 +14,9 @@ class Solution
   def part1
     possible_games =
       games.reject { |game|
-        game.split(":")[1].split(";").any? { |reveal|
-          reveal.split(",").any? { |blocks|
-            num, color = blocks.split
-            num.to_i > BAG[color.to_sym]
-          }
+        game.split(":")[1].split(/[;,]/).any? { |reveal|
+          num, color = reveal.split
+          num.to_i > BAG[color.to_sym]
         }
       }
     possible_games.sum { |game| game.match(/Game (\d+)/)[1].to_i }
@@ -27,11 +25,9 @@ class Solution
   def part2
     games.sum { |game|
       tally = { red: 0, green: 0, blue: 0 }
-      game.split(":")[1].split(";").each do |reveal|
-        reveal.split(",").each do |blocks|
-          num, color = blocks.split
-          tally[color.to_sym] = [tally[color.to_sym], num.to_i].max
-        end
+      game.split(":")[1].split(/[;,]/).each do |reveal|
+        num, color = reveal.split
+        tally[color.to_sym] = [tally[color.to_sym], num.to_i].max
       end
       tally.values.inject(:*)
     }
