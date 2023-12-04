@@ -21,26 +21,22 @@ class Solution
   end
 
   def part2
-    multipliers = Hash.new(1)
-    total = 0
-    cards.each do |card|
+    copies = Hash.new(1)
+    cards.sum do |card|
       card_id = card[/Card\s+(\d+)/, 1].to_i
-      total += multipliers[card_id]
-      mine, winning = card.split(":").last.split("|").map(&:split)
-      matching = (mine & winning).size
-      1.upto(matching) { |i| multipliers[card_id + i] += multipliers[card_id] }
+      mine, winning = card.split(":")[1].split("|").map(&:split)
+      wins = (mine & winning).count
+      1.upto(wins) { |i| copies[card_id + i] += copies[card_id] }
+      copies[card_id]
     end
-    total
   end
 
   def part1
-    total = 0
-    cards.each do |card|
-      mine, winning = card.split(":").last.split("|").map(&:split)
-      matching = mine & winning
-      total += 2**(matching.size - 1) if matching.any?
+    cards.sum do |card|
+      mine, winning = card.split(":")[1].split("|").map(&:split)
+      wins = (mine & winning).count
+      1 << wins >> 1 # Hat tip u/Jonathan_Frias. I have no idea how bit shifting works.
     end
-    total
   end
 
   def solutions
