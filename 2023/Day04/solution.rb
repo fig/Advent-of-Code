@@ -24,7 +24,7 @@ class Solution
     copies = Hash.new(1)
     cards.sum do |card|
       card_id = card[/Card\s+(\d+)/, 1].to_i
-      mine, winning = card.split(":")[1].split("|").map(&:split)
+      mine, winning = card.split("|").map(&:split)
       wins = (mine & winning).count
       1.upto(wins) { |i| copies[card_id + i] += copies[card_id] }
       copies[card_id]
@@ -33,9 +33,9 @@ class Solution
 
   def part1
     cards.sum do |card|
-      mine, winning = card.split(":")[1].split("|").map(&:split)
+      mine, winning = card.split("|").map(&:split)
       wins = (mine & winning).count
-      1 << wins >> 1 # Hat tip u/Jonathan_Frias. I have no idea how bit shifting works.
+      1 << (wins - 1) # Hat tip u/Jonathan_Frias. I have no idea how bit shifting works.
     end
   end
 
