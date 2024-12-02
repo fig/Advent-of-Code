@@ -4,6 +4,8 @@ require:
 AllCops:
   EnabledByDefault: true
   NewCops: enable
+  Exclude:
+    - /**/golf*.rb
 
 Bundler/GemComment:
   Enabled: false
