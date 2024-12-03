@@ -2,35 +2,31 @@
 
 class Solution
   def input
-    File.read(File.join(__dir__, "input.txt")).split("\n")
+    File.readlines(File.join(__dir__, "input.txt"))
+  end
+
+  def reports
+    @reports ||=
+      input.map { |report|
+        report.split.map(&:to_i).tap { |r| r.reverse! if r.first > r.last }
+      }
+  end
+
+  def safe? = ->(r) { r.each_cons(2).all? { |a, b| (1..3).cover?(b - a) } }
+
+  def safe_with_dampener? = ->(r) { (0...r.length).any? { |i| safe?[r[0...i] + r[(i + 1)..]] } }
+
+  def part1
+    reports.count(&safe?)
+  end
+
+  def part2
+    reports.count(&safe_with_dampener?)
   end
 
   def solutions
     puts "Part1: #{part1} #{part1 == 564 ? '✅' : '❌'}"
-    puts "Part2: #{part2} #{part2 == 0 ? '✅' : '❌'}"
-  end
-
-private
-
-  def part1
-    input.map! { |report| report.split.map!(&:to_i) }
-         .map { |report| report.first > report.last ? report.reverse! : report }
-         .count { |report| report.each_cons(2).all? { |a, b| (a < b) && ((b - a) < 4) } }
-  end
-
-  def part2
-    input.map! { |report| report.split.map!(&:to_i) }
-         .map { |report| report.first > report.last ? report.reverse! : report }
-         .count { |report|
-      (report.each_cons(2).all? { |a, b| (a < b) && ((b - a) < 4) }) ||
-        # (report[1...].each_cons(2).all? { |a, b| (a < b) && ((b - a) < 4) }) ||
-        # (report[...-1].each_cons(2).all? { |a, b| (a < b) && ((b - a) < 4) }) ||
-        (report.permutation(report.size - 1).map(&:sort).uniq!.one? { |perm|
-           perm.each_cons(2).all? { |a, b|
-             (a < b) && ((b - a) < 4)
-           }
-         })
-    }
+    puts "Part2: #{part2} #{part2 == 604 ? '✅' : '❌'}"
   end
 end
 
