@@ -14,8 +14,10 @@ private
 
   def part1
     input.map { |line| line.split.map(&:to_i) }
-         .transpose.map!(&:sort!)
-         .transpose.sum { |row| (row.first - row.last).abs }
+         .transpose
+         .map!(&:sort!)
+         .transpose
+         .sum { |row| (row.first - row.last).abs }
   end
 
   def part2
