@@ -7,9 +7,7 @@ class Solution
 
   def reports
     @reports ||=
-      input.map { |report|
-        report.split.map(&:to_i).tap { |r| r.reverse! if r.first > r.last }
-      }
+      input.map { |report| report.split.map(&:to_i).tap { |r| r.reverse! if r.first > r.last } }
   end
 
   def safe? = ->(r) { r.each_cons(2).all? { |a, b| (1..3).cover?(b - a) } }
