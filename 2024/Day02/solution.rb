@@ -14,7 +14,7 @@ class Solution
 
   def safe? = ->(r) { r.each_cons(2).all? { |a, b| (1..3).cover?(b - a) } }
 
-  def safe_with_dampener? = ->(r) { (0...r.length).any? { |i| safe?[r[0...i] + r[(i + 1)..]] } }
+  def safe_with_dampener? = ->(r) { r.combination(r.length - 1).any?(&safe?) }
 
   def part1
     reports.count(&safe?)
