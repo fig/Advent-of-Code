@@ -12,12 +12,14 @@ class Solution
     @lines ||= input
   end
 
+  def xmas_count = ->(line) { line.scan(XMAS).count }
+
   def horizontal_count
-    lines.sum { |line| line.scan(XMAS).count }
+    lines.sum(&xmas_count)
   end
 
   def vertical_count
-    lines.map(&:chars).transpose.sum { |line| line.join.scan(XMAS).count }
+    lines.map(&:chars).transpose.map!(&:join).sum(&xmas_count)
   end
 
   # Slant the rectangle into a diamond shape by padding each line, because
@@ -33,8 +35,7 @@ class Solution
 
   # Flip the passed diamond onto its side, then scan it for XMAS and SAMX.
   def diagonal_count(&block)
-    lines.map(&:chars).each_with_index.map(&block)
-         .transpose.sum { |line| line.join.scan(XMAS).count }
+    lines.map(&:chars).each_with_index.map(&block).transpose.map!(&:join).sum(&xmas_count)
   end
 
   def grid
