@@ -94,9 +94,9 @@ class Solution
           end
         case dup_map[look_ahead]
         when ".", "^"
-          current_position = look_ahead
-          break obstructions += 1 if seen[current_position].include?(heading)
+          break obstructions += 1 if seen[look_ahead].include?(heading)
 
+          current_position = look_ahead
           seen[current_position] << heading
         when "#"
           heading = directions[(directions.index(heading) + 1) % 4]
