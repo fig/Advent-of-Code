@@ -68,10 +68,9 @@ class Solution
   def part2
     directions = %i[up right down left]
 
-    foo = ["#", "^"]
     obstructions = 0
     path_taken.uniq.each do |position|
-      next if foo.include? map[position]
+      next if map[position] == "^"
 
       dup_map = map.dup
       dup_map[position] = "#"
@@ -112,7 +111,7 @@ class Solution
     p1 = part1
     puts "Part1: #{p1} #{[5312, 41].include?(p1) ? '✅' : '❌'}"
     p2 = part2
-    puts "\nPart2: #{p2} #{[1748, 6].include?(p2) ? '✅' : '❌'}"
+    puts "Part2: #{p2} #{[1748, 6].include?(p2) ? '✅' : '❌'}"
   end
 end
 
