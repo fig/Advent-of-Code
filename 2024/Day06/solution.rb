@@ -28,6 +28,10 @@ class Solution
       end
   end
 
+  def path_taken
+    @path_taken ||= []
+  end
+
   def part1
     seen = {}
     directions = %i[up right down left]
@@ -51,6 +55,7 @@ class Solution
       when ".", "^"
         steps += 1 unless seen.include?(look_ahead)
         current_position = look_ahead
+        path_taken << current_position
         seen[current_position] = true
       when "#"
         heading = directions[(directions.index(heading) + 1) % 4]
@@ -65,9 +70,8 @@ class Solution
 
     foo = ["#", "^"]
     obstructions = 0
-    map.each do |position, char|
-      print "\r #{(position[1] / 130.0 * 100).round}%"
-      next if foo.include?(char)
+    path_taken.uniq.each do |position|
+      next if foo.include? map[position]
 
       dup_map = map.dup
       dup_map[position] = "#"
