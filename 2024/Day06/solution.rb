@@ -1,118 +1,84 @@
 #!/usr/bin/env ruby
 
 class Solution
+  DIRS = [[-1, 0], [0, 1], [1, 0], [0, -1]].freeze
+
   def input
-    # <<~INPUT
-    #   ....#.....
-    #   .........#
-    #   ..........
-    #   ..#.......
-    #   .......#..
-    #   ..........
-    #   .#..^.....
-    #   ........#.
-    #   #.........
-    #   ......#...
-    # INPUT
-    File.read(File.join(__dir__, "input.txt"))
+    <<~INPUT
+      ....#.....
+      .........#
+      ..........
+      ..#.......
+      .......#..
+      ..........
+      .#..^.....
+      ........#.
+      #.........
+      ......#...
+    INPUT
+    # File.read(File.join(__dir__, "input.txt"))
   end
 
-  def map
-    @map ||=
-      begin
-        map = {}
-        input.lines.map(&:chomp).each_with_index do |line, y|
-          line.chars.each_with_index { |char, x| map[[x, y]] = char }
-        end
-        map
-      end
-  end
-
-  def path_taken
-    @path_taken ||= []
-  end
-
-  def part1
+  def part1(map, current_position)
     seen = {}
-    directions = %i[up right down left]
-    current_position = map.key("^")
     seen[current_position] = true
-    heading = :up
+    heading = 0
     steps = 1
     loop do
-      look_ahead =
-        case heading
-        when :up
-          [current_position[0], current_position[1] - 1]
-        when :right
-          [current_position[0] + 1, current_position[1]]
-        when :down
-          [current_position[0], current_position[1] + 1]
-        when :left
-          [current_position[0] - 1, current_position[1]]
-        end
+      look_ahead = DIRS[heading].zip(current_position).map!(&:sum)
       case map[look_ahead]
-      when ".", "^"
+      when true
         steps += 1 unless seen.include?(look_ahead)
         current_position = look_ahead
-        path_taken << current_position
         seen[current_position] = true
-      when "#"
-        heading = directions[(directions.index(heading) + 1) % 4]
-      else
+      when false
+        heading = (heading + 1) % 4
+      when nil
         break steps
       end
     end
   end
 
-  def part2
-    directions = %i[up right down left]
+  def walk_path(map, start, heading, seen, recursive)
+    loops = 0
+    while true
+      look_ahead = DIRS[heading].zip(start).map!(&:sum)
+      case map[look_ahead]
+      when true
+        if recursive
+          map[look_ahead] = false
+          loops += 1 if seen.none? { |pos, _|
+            pos == look_ahead
+          } && walk_path(map, start, heading, seen.clone, false)
 
-    obstructions = 0
-    path_taken.uniq.each do |position|
-      next if map[position] == "^"
-
-      dup_map = map.dup
-      dup_map[position] = "#"
-      heading = :up
-      current_position = dup_map.key("^")
-      seen = Hash.new { |h, k| h[k] = [] }
-      seen[current_position] = [heading]
-
-      loop do
-        look_ahead =
-          case heading
-          when :up
-            [current_position[0], current_position[1] - 1]
-          when :right
-            [current_position[0] + 1, current_position[1]]
-          when :down
-            [current_position[0], current_position[1] + 1]
-          when :left
-            [current_position[0] - 1, current_position[1]]
-          end
-        case dup_map[look_ahead]
-        when ".", "^"
-          break obstructions += 1 if seen[look_ahead].include?(heading)
-
-          current_position = look_ahead
-          seen[current_position] << heading
-        when "#"
-          heading = directions[(directions.index(heading) + 1) % 4]
-        else
-          break
+          map[look_ahead] = true
         end
+        start = look_ahead
+        return true unless seen.add? [start, heading]
+      when false
+        heading = (heading + 1) % 4
+      when nil
+        return recursive && loops
       end
     end
-    obstructions
+  end
+
+  def solve
+    map = {}
+    start = nil
+    input.split("\n").each.with_index do |line, row|
+      line.chars.each.with_index { |c, col|
+        map[[row, col]] = c != "#"
+        start = [row, col] if c == "^"
+      }
+    end
+    [part1(map, start), walk_path(map, start, 0, Set.new([[start, 0]]), true)]
   end
 
   def solutions
-    p1 = part1
+    p1, p2 = solve
     puts "Part1: #{p1} #{[5312, 41].include?(p1) ? '✅' : '❌'}"
-    p2 = part2
     puts "Part2: #{p2} #{[1748, 6].include?(p2) ? '✅' : '❌'}"
   end
 end
-
 Solution.new.solutions
