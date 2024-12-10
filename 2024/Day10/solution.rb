@@ -33,6 +33,16 @@ class Solution
                         .keys
   end
 
+  def valid_neighbors
+    lambda { |current_location|
+      x, y = current_location
+      value = map[current_location]
+      [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]].select { |neighbor|
+        map[neighbor] == value + 1
+      }
+    }
+  end
+
   # number of cells with value 9 reachable from trail_head by moving up,
   # down, left, right and incrementing the value by exactly 1 with each step.
   def score
@@ -42,12 +52,7 @@ class Solution
       count = 0
 
       until queue.empty?
-        current = queue.shift
-        x, y = current
-        value = map[current]
-
-        [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]].each do |neighbor|
-          next unless map[neighbor] == value + 1
+        valid_neighbors[queue.shift].each do |neighbor|
           next if visited.include?(neighbor)
 
           if map[neighbor] == 9
@@ -73,12 +78,7 @@ class Solution
 
       until queue.empty?
         current, path_length = queue.shift
-        x, y = current
-        value = map[current]
-
-        [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]].each do |neighbor|
-          next unless map[neighbor] == value + 1
-
+        valid_neighbors[current].each do |neighbor|
           if map[neighbor] == 9
             paths += 1
           else
