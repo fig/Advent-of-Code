@@ -43,52 +43,33 @@ class Solution
     }
   end
 
-  # number of cells with value 9 reachable from trail_head by moving up,
-  # down, left, right and incrementing the value by exactly 1 with each step.
-  def score
-    lambda { |trail_head|
-      queue = [trail_head]
-      visited = Set.new([trail_head])
-      count = 0
+  def method_missing(method_name, *args, &block)
+    if %i[score rating].include?(method_name)
+      define_singleton_method(:score?) { method_name == :score }
+      lambda { |trail_head|
+        queue = [[trail_head, 0]]
+        visited = Set.new([[trail_head], 0])
+        count = 0
 
-      until queue.empty?
-        valid_neighbors[queue.shift].each do |neighbor|
-          next if visited.include?(neighbor)
+        until queue.empty?
+          current, path_length = queue.shift
+          valid_neighbors[current].each do |neighbor|
+            next if score? && visited.include?(neighbor)
 
-          if map[neighbor] == 9
-            count += 1
-          else
-            queue << neighbor
-          end
-          visited << neighbor
-        end
-      end
-
-      count
-    }
-  end
-
-  # number of distinct paths that can be taken to reach a cell with value 9
-  # from trail_head by moving up, down, left, right and incrementing the
-  # value by exactly 1 with each step.
-  def rating
-    lambda { |trail_head|
-      queue = [[trail_head, 0]]
-      paths = 0
-
-      until queue.empty?
-        current, path_length = queue.shift
-        valid_neighbors[current].each do |neighbor|
-          if map[neighbor] == 9
-            paths += 1
-          else
-            queue << [neighbor, path_length + 1]
+            if map[neighbor] == 9
+              count += 1
+            else
+              queue << [neighbor, path_length + 1]
+            end
+            visited << neighbor
           end
         end
-      end
 
-      paths
-    }
+        count
+      }
+    else
+      super
+    end
   end
 
   def part1
@@ -103,7 +84,7 @@ class Solution
     p1 = part1
     puts "Part1: #{p1} #{[36, 624].include?(p1) ? '✅' : '❌'}"
     p2 = part2
-    puts "Part2: #{part2} #{[1483].include?(p2) ? '✅' : '❌'}"
+    puts "Part2: #{part2} #{[81, 1483].include?(p2) ? '✅' : '❌'}"
   end
 end
 
