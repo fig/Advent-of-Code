@@ -2,25 +2,24 @@
 
 class Solution
   def rocks
-    @rocks ||= File.read(File.join(__dir__, "input.txt")).chomp.split.map(&:to_i)
+    @rocks ||= File.read(File.join(__dir__, "input.txt")).split.map(&:to_i)
   end
 
   def cache
     @cache ||= {}
   end
 
-  def tick(value, level, cost_value = 1)
-    return cost_value if level.zero?
+  def tick(value, level)
+    return 1 if level.zero?
 
     cache[[level, value]] ||=
       if value.zero?
-        tick(1, level - 1, cost_value)
+        tick(1, level - 1)
       elsif (string = value.to_s) && string.length.even?
         mid = string.length / 2
-        tick(string[...mid].to_i, level - 1, cost_value) +
-          tick(string[mid..].to_i, level - 1, cost_value)
+        tick(string[...mid].to_i, level - 1) + tick(string[mid..].to_i, level - 1)
       else
-        tick(value * 2024, level - 1, cost_value)
+        tick(value * 2024, level - 1)
       end
   end
 
