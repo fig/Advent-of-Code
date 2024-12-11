@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
 class Solution
-  attr_reader :count
+  def rocks
+    @rocks ||= File.read(File.join(__dir__, "input.txt")).chomp.split.map(&:to_i)
+  end
 
-  def input
-    # "125 17"
-    # "512 72 2024 2 0 2 4 2867 6032"
-    File.read(File.join(__dir__, "input.txt"))
+  def cache
+    @cache ||= {}
   end
 
   def tick(value, level, cost_value = 1)
@@ -15,50 +15,46 @@ class Solution
     cache[[level, value]] ||=
       if value.zero?
         tick(1, level - 1, cost_value)
-      elsif value.to_s.length.even?
-        s = value.to_s
-        l = s.length / 2
-        tick(s[...l].to_i, level - 1, cost_value) + tick(s[l..].to_i, level - 1, cost_value)
+      elsif (string = value.to_s) && string.length.even?
+        mid = string.length / 2
+        tick(string[...mid].to_i, level - 1, cost_value) +
+          tick(string[mid..].to_i, level - 1, cost_value)
       else
         tick(value * 2024, level - 1, cost_value)
       end
   end
 
-  def blink(n, line)
-    line.sum { |rock| tick(rock, n) }
+  def blink(blinks, rocks)
+    rocks.sum { |rock| tick(rock, blinks) }
   end
-
-  def cache
-    @cache ||= {}
-    # @cache ||= Hash.new { |h, k| h[k] = {} }
-  end
-
-  # def cost_values
-  #   @cost_values ||= Hash.new { |h, k| h[k] = Hash.new(0) }
-  # end
 
   def part1
-    line = input.chomp.split.map(&:to_i)
-    blink(25, line)
+    blink(25, rocks)
   end
 
   def part2
-    line = input.chomp.split.map(&:to_i)
-    blink(75, line)
+    blink(75, rocks)
   end
 
   def solutions
-    start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-
     p1 = part1
-    puts "Part1: #{p1} #{[55_312, 189_092].include?(p1) ? '✅' : '❌'}"
-
     p2 = part2
-    puts "Part2: #{p2} #{[65_601_038_650_482].include?(p2) ? '✅' : '❌'}"
 
-    finish = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    puts "\nExecution time: #{((finish - start) * 1000).round(2)} ms"
+    puts "Part1: #{p1} #{[55_312, 189_092].include?(p1) ? '✅' : '❌'}"
+    puts "Part2: #{p2} #{[65_601_038_650_482, 224_869_647_102_559].include?(p2) ? '✅' : '❌'}"
+
+    require "benchmark"
+    puts "Benchmarking..."
+
+    bm = (((1..10).to_a.sum { cache.clear && Benchmark.realtime { part1 } }) / 10)
+    puts "Part1: #{(bm * 1000).round 3} ms"
+    bm = (((1..10).to_a.sum { cache.clear && Benchmark.realtime { part2 } }) / 10)
+    puts "Part2: #{(bm * 1000).round 3} ms"
   end
 end
 
 Solution.new.solutions
+
+# Benchmarks (i5-8265U / 16GB RAM / Linux)
+# Part1: ~   5 ms
+# Part2: ~ 245 ms
