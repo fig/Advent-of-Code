@@ -6,13 +6,13 @@ class Solution
   end
 
   def cache
-    @cache ||= {}
+    @cache ||= Hash.new { |h, k| h[k] = {} }
   end
 
   def tick(value, level)
     return 1 if level.zero?
 
-    cache[[level, value]] ||=
+    cache[level][value] ||=
       if value.zero?
         tick(1, level - 1)
       elsif (string = value.to_s) && string.length.even?
