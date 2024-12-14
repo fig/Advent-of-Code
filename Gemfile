@@ -7,3 +7,5 @@ gem "rubocop-rspec", "~> 3.0"
 gem "debug", "~> 1.9"
 
 gem "algorithms", "~> 1.0"
+
+gem "amazing_print", "~> 1.6"
